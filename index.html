@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เลือกวันเริ่มต้นและสร้างรอบ 30 วัน</title>
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+      background-color: #2e2e2e;
+      color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      padding: 30px 0;
+      margin: 0;
+    }
+    .container {
+      background-color: #3e3e3e;
+      padding: 20px 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      width: 550px;
+    }
+    h1 {
+      text-align: center;
+      color: #ffffff;
+    }
+    input, select, button {
+      padding: 5px 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      cursor: pointer;
+      background-color: #0077cc;
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+      border: 1px solid #555555;
+    }
+    th {
+      background-color: #0077cc;
+      color: white;
+    }
+    .current {
+      background-color: #ffb74d;
+      font-weight: bold;
+      color: #000000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>สร้างรอบ 30 วัน</h1>
+    <div>
+      <label>วัน: <input type="number" id="day" min="1" max="31" value="2"></label>
+      <label>เดือน: 
+        <select id="month">
+          <option value="0">มกราคม</option>
+          <option value="1">กุมภาพันธ์</option>
+          <option value="2">มีนาคม</option>
+          <option value="3">เมษายน</option>
+          <option value="4">พฤษภาคม</option>
+          <option value="5">มิถุนายน</option>
+          <option value="6">กรกฎาคม</option>
+          <option value="7">สิงหาคม</option>
+          <option value="8" selected>กันยายน</option>
+          <option value="9">ตุลาคม</option>
+          <option value="10">พฤศจิกายน</option>
+          <option value="11">ธันวาคม</option>
+        </select>
+      </label>
+      <label>ปี: <input type="number" id="year" min="2000" max="2100" value="2024"></label>
+      <button onclick="generateCycles()">สร้างรอบ 12 รอบ</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>รอบ</th>
+          <th>วันครบ 30 วัน</th>
+        </tr>
+      </thead>
+      <tbody id="cycleTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function formatDateThai(date) {
+      const months = [
+        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+      ];
+      const day = date.getDate();
+      const month = months[date.getMonth()];
+      const year = date.getFullYear();
+      return `${day} ${month} ${year}`;
+    }
+
+    function generateCycles() {
+      const day = parseInt(document.getElementById('day').value);
+      const month = parseInt(document.getElementById('month').value);
+      const year = parseInt(document.getElementById('year').value);
+      const startDate = new Date(year, month, day);
+
+      const tableBody = document.getElementById('cycleTable');
+      tableBody.innerHTML = ''; // ล้างตารางก่อนสร้างใหม่
+
+      const today = new Date();
+      for (let i = 1; i <= 12; i++) {
+        let cycleDate = new Date(startDate.getTime() + i * 30 * 24 * 60 * 60 * 1000);
+        const row = document.createElement('tr');
+
+        // ไฮไลต์รอบปัจจุบันถ้าอยู่ระหว่างวันนี้
+        if (today >= new Date(cycleDate.getTime() - 30*24*60*60*1000) && today < cycleDate) {
+          row.classList.add('current');
+        }
+
+        row.innerHTML = `<td>${i}</td><td>${formatDateThai(cycleDate)}</td>`;
+        tableBody.appendChild(row);
+      }
+    }
+  </script>
+</body>
+</html>
